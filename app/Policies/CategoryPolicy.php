@@ -15,16 +15,16 @@ class CategoryPolicy
     {
         return $user->id === $category->user
             ? Response::allow()
-            : Response::deny('You do not own this expenses');
+            : Response::deny('You do not own this categories');
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
     public function modify(User $user, Category $category): Response
-    {
-        return $user->id === $category->user
-            ? Response::allow()
-            : Response::deny('You do not own this expenses');
-    }
+{
+    return $user->id === $category->user
+        ? Response::allow()
+        : Response::deny('You do not own this category');
+}
 }

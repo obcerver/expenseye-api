@@ -17,7 +17,7 @@ class ExpenseController extends Controller
     {
         $this->middleware('auth:sanctum');
     }
-    
+
     /**
      * Display a listing of the resource.
      */
@@ -40,7 +40,7 @@ class ExpenseController extends Controller
      */
     public function show(Expense $expense)
     {
-    return new ExpenseResource($expense);
+        return new ExpenseResource($expense);
     }
 
     /**
@@ -48,14 +48,21 @@ class ExpenseController extends Controller
      */
     public function user(Request $request)
     {
-        return ExpenseResource::collection(Expense::where('user', $request->user()->id)->get());
+        // Fetch expenses for the authenticated user and eager load the 'category' relationship
+        $expenses = Expense::where('user', $request->user()->id)
+            ->with('category') // Eager load category
+            ->orderBy('issuedAt', 'desc') // Sort by issuedAt date (oldest first)
+            ->get();
+
+        // Return the expenses as a collection of ExpenseResource
+        return ExpenseResource::collection($expenses);
     }
 
     /**
      * Display the specified resource by category id.
      */
     public function category(Category $category)
-    {   
+    {
         Gate::authorize('view', $category);
         return ExpenseResource::collection(Expense::where('category', $category->id)->get());
     }
@@ -64,7 +71,8 @@ class ExpenseController extends Controller
      * Update the specified resource in storage.
      */
     public function update(UpdateExpenseRequest $request, Expense $expense)
-    {
+    {   
+        Gate::authorize('modify', $expense);
         $expense->update($request->all());
     }
 

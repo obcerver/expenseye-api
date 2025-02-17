@@ -20,9 +20,10 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Category::class => CategoryPolicy::class,
-        Category::class => ExpensePolicy::class,
+        Expense::class => ExpensePolicy::class,
+
         StoreExpenseRequest::class => ExpensePolicy::class,
-        Expense::class => ExpensePolicy::class
+        
     ];
 
     /**
